@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPS - Handherkenning</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3"></script>
+</head>
+<body>
+    <div class="bg-icons">
+        <span class="icon rock">✊</span>
+        <span class="icon paper">✋</span>
+        <span class="icon scissors">✌️</span>
+    </div>
+
+    <div class="main-container">
+        <div id="status-text">Laden van hand-detectie...</div>
+        
+        <div class="game-wrapper">
+            <div class="video-container">
+                <video id="webcam" autoplay playsinline></video>
+                <canvas id="output_canvas"></canvas>
+            </div>
+            
+            <button id="play-round-btn" class="start-button" style="font-size: 1.5em; margin-bottom: 10px;">Speel Ronde!</button>
+    
+            <div class="result-display">
+                <div id="user-gesture">Jij: ?</div>
+                <div id="timer">-</div>
+                <div id="pc-gesture">PC: ?</div>
+            </div>
+        </div>
+    
+        <a href="index.html" class="start-button" style="font-size: 1em; padding: 0.5em 1em; background-color: #ff6b6b;">Stop Spel</a>
+    </div>
+
+    <script type="module" src="js/game.js"></script>
+</body>
+</html>
