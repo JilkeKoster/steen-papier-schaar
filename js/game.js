@@ -44,6 +44,7 @@ const init = async () => {
     startCamera();
 };
 
+// AANGEPASTE STARTCAMERA MET AUDIO UNLOCK
 function startCamera() {
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
         video.srcObject = stream;
@@ -51,13 +52,21 @@ function startCamera() {
             predictWebcam();
             
             playBtn.addEventListener("click", () => {
+                // UNLOCK AUDIO: we spelen en pauzeren direct om de browser te sussen
+                [sndTick, sndGo, sndWin, sndLose].forEach(sound => {
+                    sound.play().then(() => {
+                        sound.pause();
+                        sound.currentTime = 0;
+                    }).catch(() => {/* Stilzwijgend negeren */});
+                });
+
                 if (!isPlaying) startRound();
             });
         });
     });
 }
 
-// 2. De Spelronde (3, 2, 1... GO!)
+// AANGEPASTE STARTROUND MET BETERE TIMING
 async function startRound() {
     isPlaying = true;
     playBtn.style.opacity = "0.5";
@@ -67,18 +76,22 @@ async function startRound() {
     timerDisplay.innerText = count;
     pcOutput.innerText = "PC: ?";
     
-    // Eerste tik bij de start van het aftellen
+    // De eerste tik
+    sndTick.currentTime = 0;
     sndTick.play();
 
     const interval = setInterval(() => {
         count--;
         if (count > 0) {
             timerDisplay.innerText = count;
-            sndTick.play(); // Geluidje bij elke seconde
+            // Forceer herstart van de tik
+            sndTick.currentTime = 0; 
+            sndTick.play(); 
         } else {
             clearInterval(interval);
             timerDisplay.innerText = "GO!";
-            sndGo.play(); // Geluidje bij de start
+            sndGo.currentTime = 0;
+            sndGo.play(); 
             determineWinner();
             
             setTimeout(() => {
@@ -120,7 +133,6 @@ function determineWinner() {
     if(userScoreDisplay) userScoreDisplay.innerText = userScore;
     if(pcScoreDisplay) pcScoreDisplay.innerText = pcScore;
 
-    // Check voor Best of 3 winnaar
     if (userScore === 2 || pcScore === 2) {
         setTimeout(() => {
             const winnaarTekst = userScore === 2 ? "JIJ HEBT GEWONNEN! 🎉" : "COMPUTER WINT... 🤖";
@@ -128,9 +140,8 @@ function determineWinner() {
             finalScoreText.innerText = `Eindstand: ${userScore} - ${pcScore}`;
             
             if (userScore === 2) {
-                sndWin.play(); // Juichen bij winst!
+                sndWin.play(); 
                 
-                // Confetti regen
                 var duration = 3 * 1000;
                 var end = Date.now() + duration;
 
@@ -155,7 +166,7 @@ function determineWinner() {
                   }
                 }());
             } else {
-                sndLose.play(); // Boing bij verlies...
+                sndLose.play(); 
             }
 
             modal.style.display = "flex";
@@ -166,6 +177,11 @@ function determineWinner() {
 function resetGame() {
     userScore = 0;
     pcScore = 0;
+    sndWin.pause();
+    sndWin.currentTime = 0;
+    sndLose.pause();
+    sndLose.currentTime = 0;
+    
     if(userScoreDisplay) userScoreDisplay.innerText = "0";
     if(pcScoreDisplay) pcScoreDisplay.innerText = "0";
     statusText.innerText = "Nieuw spel! Klik op de knop.";
