@@ -228,3 +228,43 @@ h1 {
     color: #1A1A3D;
     margin-bottom: 1.5em;
 }
+
+/* Container voor de webcam */
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px; /* Mooie breedte voor desktop, vult scherm op mobiel */
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 15px;
+    background: #000;
+}
+
+#webcam {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* Spiegel de video (zodat links ook echt links is voor de speler) */
+    transform: scaleX(-1);
+}
+
+/* Knoppen groter maken voor mobiel */
+#play-round-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    width: 90%; /* Bijna schermbreed op mobiel */
+    max-width: 300px;
+}
+
+/* Flexbox aanpassingen voor kleine schermen */
+@media (max-width: 600px) {
+    .scores {
+        flex-direction: row; /* Scores naast elkaar houden */
+        justify-content: space-around;
+        font-size: 0.9rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+}

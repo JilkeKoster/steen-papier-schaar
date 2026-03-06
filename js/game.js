@@ -44,15 +44,24 @@ const init = async () => {
     startCamera();
 };
 
-// AANGEPASTE STARTCAMERA MET AUDIO UNLOCK
+// --- HIER IS DE GEWIJZIGDE STARTCAMERA VOOR MOBIEL EN AUDIO UNLOCK ---
 function startCamera() {
-    navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+    // Instellingen voor mobiele camera (selfie mode)
+    const constraints = {
+        video: {
+            facingMode: "user", 
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+        }
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         video.srcObject = stream;
         video.addEventListener("loadeddata", () => {
             predictWebcam();
             
             playBtn.addEventListener("click", () => {
-                // UNLOCK AUDIO: we spelen en pauzeren direct om de browser te sussen
+                // UNLOCK AUDIO voor browsers
                 [sndTick, sndGo, sndWin, sndLose].forEach(sound => {
                     sound.play().then(() => {
                         sound.pause();
@@ -63,10 +72,13 @@ function startCamera() {
                 if (!isPlaying) startRound();
             });
         });
+    }).catch(err => {
+        console.error("Camera fout: ", err);
+        statusText.innerText = "Camera niet gevonden of geblokkeerd.";
     });
 }
 
-// AANGEPASTE STARTROUND MET BETERE TIMING
+// 2. De Spelronde (3, 2, 1... GO!)
 async function startRound() {
     isPlaying = true;
     playBtn.style.opacity = "0.5";
@@ -84,7 +96,6 @@ async function startRound() {
         count--;
         if (count > 0) {
             timerDisplay.innerText = count;
-            // Forceer herstart van de tik
             sndTick.currentTime = 0; 
             sndTick.play(); 
         } else {
